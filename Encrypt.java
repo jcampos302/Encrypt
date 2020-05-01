@@ -16,6 +16,13 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+
 
 
 
@@ -23,7 +30,13 @@ class EncryptFrame extends JFrame implements ActionListener{
 
     JFileChooser fc;
     JTextArea log;
+    File file;
     JButton Encrypt,Decrypt,OpenFile;
+
+    Signature sign;
+    KeyPairGenerator keyPairGen;
+    KeyPair pair;
+    Cipher cipher;
 
 
     public EncryptFrame() {
@@ -60,21 +73,71 @@ class EncryptFrame extends JFrame implements ActionListener{
 
 
     }
-    public void actionPerformed(ActionEvent e) {
-        fc = new JFileChooser();
-
-        if (e.getSource() == OpenFile) {
-            int returnVal = fc.showOpenDialog(EncryptFrame.this);
+    public void OpenFile(){
+        int returnVal = fc.showOpenDialog(EncryptFrame.this);
 
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
+                file = fc.getSelectedFile();
                 log.append("Opening: " +file.getName() +".\n");
             } else {
                 log.append("Open command cancelled by user.\n");
             }
             log.setCaretPosition(log.getDocument().getLength());
+            System.out.println("Done here");
+            
+    }
+
+    public void GenKey(){
+        try{
+            sign = Signature.getInstance("SHA256withRSA");
+
+            keyPairGen = KeyPairGenerator.getInstance("RSA");
+    
+            keyPairGen.initialize(2048);
+    
+            pair = keyPairGen.generateKeyPair(); 
+        }catch(Exception e){
+            System.out.println("Error");
+        }
+    }
+
+    public void Encryption(){
+       try{
+
+        cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+
+        cipher.init(Cipher.ENCRYPT_MODE, pair.getPublic());
+        
+        byte[] input = file.toString().getBytes();
+        cipher.update(input);
+
+        byte[] cipherText = cipher.doFinal();	 
+        System.out.println(new String(cipherText, "UTF8"));
+
+        }catch(Exception e){
+            System.out.println("Error :(");
+        }
+    }
+
+    public void Decryption(){
+        try{
+     
+        } catch(Exception e){
+            System.out.println("Error");
+        }
+    }
+
+    public void actionPerformed(ActionEvent e){
+        fc = new JFileChooser();
+        GenKey();
+
+        if (e.getSource() == OpenFile) {
+            OpenFile();
+        
         }
         else if (e.getSource() == Encrypt) {
+            System.out.println(file.getName());
+            Encryption();
 
         }
         else if (e.getSource() == Decrypt) {
@@ -86,9 +149,9 @@ class EncryptFrame extends JFrame implements ActionListener{
     }
 }
 
-public class Encript {
+public class Encrypt {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
         System.out.println("File Encript Starting");
 
