@@ -23,6 +23,7 @@ class EncryptFrame extends JFrame implements ActionListener {
     JButton Encrypt, Decrypt, OpenFile;
     String NewFile;
 
+    // Creates the GUI of Encrypt.
     public EncryptFrame() {
         setSize(400, 400);
         setLayout(null);
@@ -73,12 +74,15 @@ class EncryptFrame extends JFrame implements ActionListener {
 
     }
 
+    // Method in which txt file is Encrypted
     public void Encrypt() {
         statusLog.setText("Starting Encryption on: "+ file.getName());
+        // Takes input from user and using as an IV
         try{
             int shift = Integer.parseInt(shiftText.getText());
             
             try{
+                // Reads though file and creates and encrypted version
                 Scanner input = new Scanner(file);
                 PrintStream output = new PrintStream(new File("Encrypted_"+NewFile));
                 while(input.hasNextLine()){
@@ -94,9 +98,11 @@ class EncryptFrame extends JFrame implements ActionListener {
         }
     }
 
+    // Method on how files are Decrypted.
     public void Decrypt() {
         statusLog.setText("Starting Decryption on: "+ file.getName());
         try{
+            // Takes the opposite of the IV for decription.
             int shift = 26 - Integer.parseInt(shiftText.getText());
             try{
                 Scanner input = new Scanner(file);
@@ -114,6 +120,7 @@ class EncryptFrame extends JFrame implements ActionListener {
         }
     }
 
+    // Where each char is shifted for a simple encryption scheme.
     public static String caesar(String text, int shift) {
         shift %= 26;
         if (shift == 0) return text;
@@ -133,7 +140,8 @@ class EncryptFrame extends JFrame implements ActionListener {
         }
         return sb.toString();
     }
-     
+    
+    // Opens the GUI file manager
     public void OpenFile(){
         int returnVal = fc.showOpenDialog(EncryptFrame.this);
 
@@ -147,6 +155,7 @@ class EncryptFrame extends JFrame implements ActionListener {
         NewFile = file.getName();    
     }
 
+    // Checks buttons and acction preformed.
     public void actionPerformed(ActionEvent e){
         fc = new JFileChooser();
 
@@ -173,7 +182,7 @@ class EncryptFrame extends JFrame implements ActionListener {
 }
 
 public class Encrypt {
-
+    
     public static void main(String[] args) throws Exception{
 
         EncryptFrame EncryptFrame = new EncryptFrame();
