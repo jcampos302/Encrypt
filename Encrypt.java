@@ -1,4 +1,8 @@
-// Jorge Campos Test File
+/* @author = Jorge E. Campos II
+* Final Project - Encrypt
+* This is a text file encrypter that simple scrambles characters around. 
+* 5/7/2020
+*/
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
